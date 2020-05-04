@@ -4,7 +4,7 @@
 2. Ubuntu VMs available
 
 ## Input/Parameters:
-1. Make sure the Ansible hosts file is ready
+1. Make sure the Ansible hosts file is ready (with 'masters' and 'workers' in separate groups)
 2. Make sure vars/params.yml is ready
 
 ## Use the ansible playbook(s) to:
