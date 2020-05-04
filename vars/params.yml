@@ -1,0 +1,23 @@
+packageList:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+keyUrl:
+  - https://download.docker.com/linux/ubuntu/gpg
+  - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+repoUrl:
+  - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
+  - deb https://apt.kubernetes.io/ kubernetes-xenial main
+dockerVersion: 5:18.09.5~3-0~ubuntu
+k8sVersion: 1.12.7-00
+dockerK8sPackages:
+  - docker-ce-cli={{ dockerVersion }}-{{ hostvars[inventory_hostname].ansible_distribution_release }}
+  - docker-ce={{ dockerVersion }}-{{ hostvars[inventory_hostname].ansible_distribution_release }}
+  - containerd.io
+  - kubectl={{ k8sVersion }}
+  - kubelet={{ k8sVersion }}
+  - kubeadm={{ k8sVersion }}
+dockerUsers:
+  - nic
