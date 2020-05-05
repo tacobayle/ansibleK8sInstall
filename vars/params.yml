@@ -19,6 +19,6 @@ dockerK8sPackages:
   - kubectl={{ k8sVersion }}
   - kubelet={{ k8sVersion }}
   - kubeadm={{ k8sVersion }}
-dockerUsers:
-  - nic
+dockerUser: nic
 podNetworkCidr: 10.244.0.0/16
+networkingProviderUrl: https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml

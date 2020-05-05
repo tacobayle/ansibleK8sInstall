@@ -59,14 +59,23 @@
       tags:
         - apt
 
-    - name: Add the docker users to the docker group
+    - name: Add the {{ dockerUser }} to the docker group
       become: true
       user:
-        name: "{{ item }}"
+        name: "{{ dockerUser }}"
         group: docker
         append: yes
       ignore_errors: no
-      loop: "{{ dockerUsers }}"
-      when: dockerUsers is defined
+      when: dockerUser is defined
       tags:
         - user
+
+    - name: Enable iptables
+      become: true
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubeadm
+      with_items:
+        - echo "net.bridge.bridge-nf-call-iptables=1" | tee -a /etc/sysctl.conf
+        - sysctl -p

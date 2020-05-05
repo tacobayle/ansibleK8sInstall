@@ -9,64 +9,48 @@
 
   tasks:
 
-    - name: Update repositories cache and install a list of package
+    # - name: Remove swapfile from /etc/fstab
+    #   mount:
+    #     name: "{{ item }}"
+    #     fstype: swap
+    #     state: absent
+    #   with_items:
+    #     - swap
+    #     - none
+    #
+    # - name: Disable swap
+    #   command: swapoff -a
+    #   when: ansible_swaptotal_mb > 0
+
+    - name: Initialize the cluster
       become: true
-      apt:
-        name: "{{ item }}"
-        update_cache: yes
+      command: kubeadm init --pod-network-cidr={{ podNetworkCidr }}
       ignore_errors: no
-      loop: "{{ packageList }}"
-      when: packageList is defined
       tags:
-        - apt
+        - kubeadm
 
-    - name: Add docker key to apt
+    - name: Setup the kube config file for {{ dockerUser }}
       become: true
-      apt_key:
-        url: "{{ item }}"
-      loop: "{{ keyUrl }}"
-      when: keyUrl is defined
-      tags:
-        - apt
-
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_version }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_release }}"
-
-    - name: Add repo to apt
-      become: true
-      apt_repository:
-        repo: "{{ item }}"
-        state: present
-      loop: "{{ repoUrl }}"
-      when: repoUrl is defined
-      tags:
-        - apt
-
-    - name: Install docker and k8s packages
-      become: true
-      apt:
-        name: "{{ item }}"
-        update_cache: yes
+      command: "{{ item }}"
       ignore_errors: no
-      loop: "{{ dockerK8sPackages }}"
-      when: dockerK8sPackages is defined
       tags:
-        - apt
+        - kubeadm
+      with_items:
+        - mkdir -p /home/{{ dockerUser }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ dockerUser }}/.kube/config
+        - chown {{ dockerUser }}:{{ dockerUser }} /home/{{ dockerUser }}/.kube/config
 
-    - name: Add the docker users to the docker group
-      become: true
-      user:
-        name: "{{ item }}"
-        group: docker
-        append: yes
+    - name: Install Networking Provider
+      command: "{{ item }}"
       ignore_errors: no
-      loop: "{{ dockerUsers }}"
-      when: dockerUsers is defined
       tags:
-        - user
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ networkingProviderUrl }}
+
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
+
+    - name: Copy join command to local file
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"

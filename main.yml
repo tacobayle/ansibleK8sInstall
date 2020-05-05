@@ -1,4 +1,4 @@
 ---
 - import_playbook: pbInstallK8s.yml
 - import_playbook: pbBootStrapMaster.yml
-- import_playbook: pbBootStrapWorkers.yml
+#- import_playbook: pbBootStrapWorkers.yml
