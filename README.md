@@ -20,16 +20,19 @@
 2. configure the dockerUser
 3. Install the Networking networking
 4. Generate the join join_command
-5. Save it to a local file
-6. Run the join_command on the workers
-7. Wait 120 seconds
-8. Check the status of each node - if fails wait 180 seconds and recheck
+5. Save it to a local file locally
+# On the workers (pbBootStrapWorkers.yml)
+1. Transfer the file to the workers
+2. Run the join_command on the workers
+# On the master node (pbClusterStatus.yml)
+1. Wait 120 seconds
+2. Check the status of each node - if fails wait 180 seconds and redo
 
 ## Run the playbook:
 ansible-playbook -i hosts main.yml
 
 ## Tests:
-Playbook(s) has/have been tested against (until pbBootStrapMaster and wo pbBootStrapWorkers):
+Playbook(s) has/have been tested against:
 - Ubuntu Bionic
 - ansible 2.9.5
 - docker 18.06.1~ce~3-0~ubuntu
