@@ -8,23 +8,23 @@
 2. Make sure vars/params.yml is ready
 
 ## Use the ansible playbook(s) to:
-# On all Nodes (pbInstallK8s.yml)
+### On all Nodes (pbInstallK8s.yml)
 1. Install mandatory packages for Docker/K8s
 2. Add Docker/K8s key to Apt
 3. Add Docker/K8s repo to Apt
 4. Install Docker/K8s pacakages
 5. Add Docker User to docker group
 6. Enable iptables
-# On the master node (pbBootStrapMaster.yml)
+### On the master node (pbBootStrapMaster.yml)
 1. Initialize the cluster
 2. configure the dockerUser
 3. Install the Networking networking
 4. Generate the join join_command
 5. Save it to a local file locally
-# On the workers (pbBootStrapWorkers.yml)
+### On the workers (pbBootStrapWorkers.yml)
 1. Transfer the file to the workers
 2. Run the join_command on the workers
-# On the master node (pbClusterStatus.yml)
+### On the master node (pbClusterStatus.yml)
 1. Wait 120 seconds
 2. Check the status of each node - if fails wait 180 seconds and redo
 
