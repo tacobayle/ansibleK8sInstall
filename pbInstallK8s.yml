@@ -29,14 +29,14 @@
       tags:
         - apt
 
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_version }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_release }}"
+    # - debug:
+    #     msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
+    # - debug:
+    #     msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+    # - debug:
+    #     msg: "{{ hostvars[inventory_hostname].ansible_distribution_version }}"
+    # - debug:
+    #     msg: "{{ hostvars[inventory_hostname].ansible_distribution_release }}"
 
     - name: Add repo to apt
       become: true
@@ -59,7 +59,7 @@
       tags:
         - apt
 
-    - name: Add the {{ dockerUser }} to the docker group
+    - name: Add user {{ dockerUser }} to the docker group
       become: true
       user:
         name: "{{ dockerUser }}"

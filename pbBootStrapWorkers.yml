@@ -1,6 +1,6 @@
 ---
 - hosts: workers
-  gather_facts: yes
+  # gather_facts: yes
   become_user: root
   become_method: sudo
 
@@ -9,64 +9,14 @@
 
   tasks:
 
-    - name: Update repositories cache and install a list of package
+    - name: Copy the join command to server location
+      copy: src=join-command dest=/tmp/join-command.sh mode=0777
+      tags:
+        - workers
+
+    - name: Run the command to join the cluster
       become: true
-      apt:
-        name: "{{ item }}"
-        update_cache: yes
+      command: sh /tmp/join-command.sh
       ignore_errors: no
-      loop: "{{ packageList }}"
-      when: packageList is defined
       tags:
-        - apt
-
-    - name: Add docker key to apt
-      become: true
-      apt_key:
-        url: "{{ item }}"
-      loop: "{{ keyUrl }}"
-      when: keyUrl is defined
-      tags:
-        - apt
-
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_version }}"
-    - debug:
-        msg: "{{ hostvars[inventory_hostname].ansible_distribution_release }}"
-
-    - name: Add repo to apt
-      become: true
-      apt_repository:
-        repo: "{{ item }}"
-        state: present
-      loop: "{{ repoUrl }}"
-      when: repoUrl is defined
-      tags:
-        - apt
-
-    - name: Install docker and k8s packages
-      become: true
-      apt:
-        name: "{{ item }}"
-        update_cache: yes
-      ignore_errors: no
-      loop: "{{ dockerK8sPackages }}"
-      when: dockerK8sPackages is defined
-      tags:
-        - apt
-
-    - name: Add the docker users to the docker group
-      become: true
-      user:
-        name: "{{ item }}"
-        group: docker
-        append: yes
-      ignore_errors: no
-      loop: "{{ dockerUsers }}"
-      when: dockerUsers is defined
-      tags:
-        - user
+        - workers
