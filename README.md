@@ -17,7 +17,7 @@ ansible 2.9.5
   python version = 2.7.12 (default, Oct  8 2019, 14:14:10) [GCC 5.4.0 20160609]
 avi@ansible:~/ansible/k8sInstall$
 ```
-- Ubuntu Bionic (as host to deploy Kubernetes)
+### Ubuntu Bionic (as host to deploy Kubernetes)
 ```
 nic@bionic1:~$ cat /etc/os-release
 NAME="Ubuntu"
@@ -33,9 +33,11 @@ PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-poli
 VERSION_CODENAME=bionic
 UBUNTU_CODENAME=bionic
 ```
-### docker and kubernetes version: check var/param.yaml files
+### docker and kubernetes version:
+check var/param.yaml files
 
-### Kubernetes Nteworking provider: flannel
+### Kubernetes Nteworking provider:
+- flannel
 
 ## Input/Parameters:
 1. Make sure the Ansible hosts file is ready (with 'masters' and 'workers' in separate groups)
@@ -112,8 +114,8 @@ avi@ansible:~/ansible/k8sInstall$
 ansible-playbook -i hosts main.yml
 
 ## Improvement:
-Make sure disabling swap works (not tested).
-Improve the cluster Status check.
+- Make sure disabling swap works (not tested).
+- Improve the cluster status check.
 
 ## logs (installing dockers on 3 nodes - 1 master, 2 workers):
 
