@@ -1,7 +1,41 @@
 # ansibleK8sInstall
+
 ## Prerequisites:
 1. Ansible available
 2. Ubuntu VMs available
+
+## Environment:
+Playbook(s) has/have been tested against:
+### Ansible host version
+```
+avi@ansible:~/ansible/k8sInstall$ ansible --version
+ansible 2.9.5
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/home/avi/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/avi/.local/lib/python2.7/site-packages/ansible
+  executable location = /home/avi/.local/bin/ansible
+  python version = 2.7.12 (default, Oct  8 2019, 14:14:10) [GCC 5.4.0 20160609]
+avi@ansible:~/ansible/k8sInstall$
+```
+- Ubuntu Bionic (as host to deploy Kubernetes)
+```
+nic@bionic1:~$ cat /etc/os-release
+NAME="Ubuntu"
+VERSION="18.04.4 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.4 LTS"
+VERSION_ID="18.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=bionic
+UBUNTU_CODENAME=bionic
+```
+### docker and kubernetes version: check var/param.yaml files
+
+### Kubernetes Nteworking provider: flannel
 
 ## Input/Parameters:
 1. Make sure the Ansible hosts file is ready (with 'masters' and 'workers' in separate groups)
@@ -76,37 +110,6 @@ avi@ansible:~/ansible/k8sInstall$
 
 ## Run the playbook:
 ansible-playbook -i hosts main.yml
-
-## Tests:
-Playbook(s) has/have been tested against:
-- Asnible host version
-```
-avi@ansible:~/ansible/k8sInstall$ ansible --version
-ansible 2.9.5
-  config file = /etc/ansible/ansible.cfg
-  configured module search path = [u'/home/avi/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/avi/.local/lib/python2.7/site-packages/ansible
-  executable location = /home/avi/.local/bin/ansible
-  python version = 2.7.12 (default, Oct  8 2019, 14:14:10) [GCC 5.4.0 20160609]
-avi@ansible:~/ansible/k8sInstall$
-```
-- Ubuntu Bionic (as host to deploy Kubernetes)
-```
-nic@bionic1:~$ cat /etc/os-release
-NAME="Ubuntu"
-VERSION="18.04.4 LTS (Bionic Beaver)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 18.04.4 LTS"
-VERSION_ID="18.04"
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-VERSION_CODENAME=bionic
-UBUNTU_CODENAME=bionic
-```
-- docker and kubernetes version: check var/param.yaml files
 
 ## Improvement:
 Make sure disabling swap works (not tested).
