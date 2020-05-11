@@ -10,8 +10,8 @@ keyUrl:
 repoUrl:
   - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
   - deb https://apt.kubernetes.io/ kubernetes-xenial main
-dockerVersion: 5:19.03.8~3-0~ubuntu-bionic
-k8sVersion: 1.18.2-00
+dockerVersion: 9.03.8~3-0~ubuntu
+k8sVersion: 1.12.7-00
 dockerK8sPackages:
   # - docker-ce-cli={{ dockerVersion }}
   - docker-ce={{ dockerVersion }}
@@ -21,4 +21,4 @@ dockerK8sPackages:
   - kubeadm={{ k8sVersion }}
 dockerUser: nic
 podNetworkCidr: 10.244.0.0/16
-networkingProviderUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+networkingProviderUrl: https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
