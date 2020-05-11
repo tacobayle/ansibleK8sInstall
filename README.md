@@ -5,8 +5,54 @@
 
 ## Input/Parameters:
 1. Make sure the Ansible hosts file is ready (with 'masters' and 'workers' in separate groups)
-2. Make sure vars/params.yml is ready
+```
+avi@ansible:~/ansible/k8sInstall$ more hosts
+---
+all:
+  children:
+    master:
+      hosts:
+        192.168.36.133:
+    workers:
+      hosts:
+        192.168.36.134:
+        192.168.36.136:
+  vars:
+    ansible_user: nic
+    ansible_ssh_private_key_file: '~/.ssh/id_rsa.local'
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+avi@ansible:~/ansible/k8sInstall$
+```
 
+2. Make sure vars/params.yml is ready
+```
+avi@ansible:~/ansible/k8sInstall$ more vars/params.yml
+packageList:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+keyUrl:
+  - https://download.docker.com/linux/ubuntu/gpg
+  - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+repoUrl:
+  - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
+  - deb https://apt.kubernetes.io/ kubernetes-xenial main
+dockerVersion: 5:19.03.8~3-0~ubuntu-bionic
+k8sVersion: 1.18.2-00
+dockerK8sPackages:
+  # - docker-ce-cli={{ dockerVersion }}
+  - docker-ce={{ dockerVersion }}
+  # - containerd.io
+  - kubectl={{ k8sVersion }}
+  - kubelet={{ k8sVersion }}
+  - kubeadm={{ k8sVersion }}
+dockerUser: nic
+podNetworkCidr: 10.244.0.0/16
+networkingProviderUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+avi@ansible:~/ansible/k8sInstall$
+```
 ## Use the ansible playbook(s) to:
 ### On all Nodes (pbInstallK8s.yml)
 1. Install mandatory packages for Docker/K8s
