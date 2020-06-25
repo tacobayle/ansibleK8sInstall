@@ -24,7 +24,9 @@
 
     - name: Initialize the cluster
       become: true
-      command: kubeadm init --pod-network-cidr={{ podNetworkCidr }}
+      shell: |
+        ip=$(ip -f inet addr show {{ k8sApiIf }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
+        kubeadm init --pod-network-cidr={{ podNetworkCidr }} --apiserver-advertise-address $ip
       ignore_errors: no
       tags:
         - kubeadm

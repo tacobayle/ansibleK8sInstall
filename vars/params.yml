@@ -21,4 +21,5 @@ dockerK8sPackages:
   - kubeadm={{ k8sVersion }}
 dockerUser: nic
 podNetworkCidr: 10.244.0.0/16
+k8sApiIf: ens34
 networkingProviderUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml

@@ -114,8 +114,6 @@ avi@ansible:~/ansible/k8sInstall$
 ansible-playbook -i hosts main.yml
 
 ## Improvement:
-- Make sure disabling swap works (not tested).
-- Improve the cluster status check.
 
 ## logs (installing dockers on 3 nodes - 1 master, 2 workers):
 
