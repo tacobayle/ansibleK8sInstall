@@ -20,7 +20,7 @@
       tags:
         - apt
 
-    - name: Add docker key to apt
+    - name: Add keys to apt
       become: true
       apt_key:
         url: "{{ item }}"
@@ -48,7 +48,7 @@
       tags:
         - apt
 
-    - name: Install docker and k8s packages
+    - name: Install docker, k8s and helm packages
       become: true
       apt:
         name: "{{ item }}"

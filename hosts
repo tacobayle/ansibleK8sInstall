@@ -3,11 +3,11 @@ all:
   children:
     master:
       hosts:
-        10.1.1.11:
+        192.168.2.121:
     workers:
       hosts:
-        10.1.1.12:
-        10.1.1.13:
+        192.168.2.122:
+        192.168.2.123:
   vars:
     ansible_user: nic
     ansible_ssh_private_key_file: '~/.ssh/id_rsa.local'

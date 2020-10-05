@@ -42,13 +42,25 @@
         - cp -i /etc/kubernetes/admin.conf /home/{{ dockerUser }}/.kube/config
         - chown {{ dockerUser }}:{{ dockerUser }} /home/{{ dockerUser }}/.kube/config
 
-    - name: Install Networking Provider
+    - name: Install Networking Provider // Flannel
       command: "{{ item }}"
       ignore_errors: no
       tags:
         - kubectl
       with_items:
-        - kubectl apply -f {{ networkingProviderUrl }}
+        - kubectl apply -f {{ cniFlannelUrl }}
+      when:
+        - cni == "flannel"
+
+    - name: Install Networking Provider  // Calico
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ cniCalicoUrl }}
+      when:
+        - cni == "calico"
 
     - name: Generate join command
       command: kubeadm token create --print-join-command

@@ -7,9 +7,11 @@ packageList:
 keyUrl:
   - https://download.docker.com/linux/ubuntu/gpg
   - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  - https://baltocdn.com/helm/signing.asc
 repoUrl:
   - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
   - deb https://apt.kubernetes.io/ kubernetes-xenial main
+  - deb https://baltocdn.com/helm/stable/debian/ all main
 dockerVersion: 5:19.03.8~3-0~ubuntu-bionic
 k8sVersion: 1.18.2-00
 dockerK8sPackages:
@@ -19,7 +21,10 @@ dockerK8sPackages:
   - kubectl={{ k8sVersion }}
   - kubelet={{ k8sVersion }}
   - kubeadm={{ k8sVersion }}
+  - helm
 dockerUser: nic
 podNetworkCidr: 10.244.0.0/16
 k8sApiIf: ens34
-networkingProviderUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+cni: calico # needs to be calico or flannel
+cniFlannelUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+cniCalicoUrl: https://docs.projectcalico.org/manifests/calico.yaml
