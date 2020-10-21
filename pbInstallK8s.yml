@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: master, workers
   gather_facts: yes
   become_user: root
   become_method: sudo
@@ -28,6 +28,7 @@
       when: keyUrl is defined
       tags:
         - apt
+      retries: 3
 
     # - debug:
     #     msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"

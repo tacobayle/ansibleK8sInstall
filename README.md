@@ -16,11 +16,11 @@ ansible 2.9.12
   configured module search path = ['/home/nic/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
   ansible python module location = /home/nic/.local/lib/python3.8/site-packages/ansible
   executable location = /home/nic/.local/bin/ansible
-  python version = 3.8.2 (default, Jul 16 2020, 14:00:26) [GCC 9.3.0]
-```
+  python version = 3.8.5 (default, Jul 28 2020, 12:59:40) [GCC 9.3.0]
+  ```
+
 ### Ubuntu Bionic (as host to deploy Kubernetes)
 ```
-nic@bionic1:~$ cat /etc/os-release
 NAME="Ubuntu"
 VERSION="18.04.4 LTS (Bionic Beaver)"
 ID=ubuntu
@@ -34,6 +34,7 @@ PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-poli
 VERSION_CODENAME=bionic
 UBUNTU_CODENAME=bionic
 ```
+
 ### docker and kubernetes version:
 check var/param.yaml files
 
@@ -42,7 +43,7 @@ check var/param.yaml files
 - calico
 
 ## Input/Parameters:
-1. Make sure the Ansible hosts file is ready (with 'masters' and 'workers' in separate groups)
+- Make sure the Ansible hosts file is ready (with 'masters' and 'workers' in separate groups)
 ```
 ---
 all:
@@ -60,7 +61,7 @@ all:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 ```
 
-2. Make sure vars/params.yml is configured with appropriate variables
+- Make sure vars/params.yml is configured with appropriate variables
 
 ## Use the ansible playbook(s) to:
 ### On all Nodes (pbInstallK8s.yml)
