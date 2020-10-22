@@ -30,7 +30,7 @@
       ignore_errors: no
       when:
         - nfsShares is defined
-        - kubernetes.kubernetesMasterIpCidr
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - apt
@@ -44,7 +44,7 @@
         line: Domain = master.{{ kubernetes.domain }}
       when:
         - nfsShares is defined
-        - kubernetes.kubernetesMasterIpCidr is defined
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
@@ -57,7 +57,7 @@
       loop: "{{ nfsShares }}"
       when:
         - nfsShares is defined
-        - kubernetes.kubernetesMasterIpCidr is defined
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
@@ -66,11 +66,11 @@
       become: true
       lineinfile:
         path: /etc/exports
-        line: "/var/lib/nfs-{{ item }} {{ kubernetes.kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+        line: "/var/lib/nfs-{{ item }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
       loop: "{{ nfsShares }}"
       when:
         - nfsShares is defined
-        - kubernetes.kubernetesMasterIpCidr is defined
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
@@ -82,7 +82,7 @@
         name: nfs-server
       when:
         - nfsShares is defined
-        - kubernetes.kubernetesMasterIpCidr is defined
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
