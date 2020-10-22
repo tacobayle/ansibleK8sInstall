@@ -17,7 +17,7 @@
       ignore_errors: no
       when:
         - nfsShares is defined
-        - kubernetesMasterIpCidr is defined
+        - kubernetes.kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - apt
