@@ -44,7 +44,7 @@
         line: Domain = master.{{ kubernetes.domain }}
       when:
         - nfsShares is defined
-        - kubernetesMasterIpCidr
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
@@ -57,7 +57,7 @@
       loop: "{{ nfsShares }}"
       when:
         - nfsShares is defined
-        - kubernetesMasterIpCidr
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
@@ -82,7 +82,7 @@
         name: nfs-server
       when:
         - nfsShares is defined
-        - kubernetesMasterIpCidr
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
