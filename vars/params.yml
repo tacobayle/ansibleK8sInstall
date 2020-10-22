@@ -13,18 +13,21 @@ repoUrl:
   - deb https://apt.kubernetes.io/ kubernetes-xenial main
   - deb https://baltocdn.com/helm/stable/debian/ all main
 dockerVersion: 5:19.03.8~3-0~ubuntu-bionic
-k8sVersion: 1.18.2-00
+kubernetes:
+  domain: ako.avidemo.fr
+  ifApi: ens34
+  dockerUser: nic
+  dockerVersion: 5:19.03.8~3-0~ubuntu-bionic
+  podNetworkCidr: 10.244.0.0/16
+  version: 1.18.2-00
+  #cni: calico # needs to be calico or flannel
+  # cniUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml # for Flannel
+  cniUrl: https://docs.projectcalico.org/manifests/calico.yaml # for calico
 dockerK8sPackages:
   # - docker-ce-cli={{ dockerVersion }}
-  - docker-ce={{ dockerVersion }}
+  - docker-ce={{ kubernetes.dockerVersion }}
   # - containerd.io
-  - kubectl={{ k8sVersion }}
-  - kubelet={{ k8sVersion }}
-  - kubeadm={{ k8sVersion }}
+  - kubectl={{ kubernetes.version }}
+  - kubelet={{ kubernetes.version }}
+  - kubeadm={{ kubernetes.version }}
   - helm
-dockerUser: nic
-podNetworkCidr: 10.244.0.0/16
-k8sApiIf: ens34
-cni: calico # needs to be calico or flannel
-cniFlannelUrl: https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
-cniCalicoUrl: https://docs.projectcalico.org/manifests/calico.yaml

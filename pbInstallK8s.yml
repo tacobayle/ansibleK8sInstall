@@ -60,14 +60,14 @@
       tags:
         - apt
 
-    - name: Add user {{ dockerUser }} to the docker group
+    - name: Add user {{ kubernetes.dockerUser }} to the docker group
       become: true
       user:
-        name: "{{ dockerUser }}"
+        name: "{{ kubernetes.dockerUser }}"
         group: docker
         append: yes
       ignore_errors: no
-      when: dockerUser is defined
+      when: kubernetes.dockerUser is defined
       tags:
         - user
 

@@ -73,7 +73,7 @@ all:
 - Enable iptables
 ### On the master node (pbBootStrapMaster.yml)
 - Initialize the cluster
-- configure the dockerUser
+- configure the kubernetes.dockerUser
 - Install the Networking networking
 - Generate the join join_command
 - Save it to a local file locally

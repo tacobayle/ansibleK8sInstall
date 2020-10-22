@@ -9,6 +9,20 @@
 
   tasks:
 
+    - name: Install NFS package if required
+      become: true
+      apt:
+        name: nfs-common
+        update_cache: yes
+      ignore_errors: no
+      when:
+        - nfsShares is defined
+        - kubernetesMasterIpCidr
+        - kubernetes.domain is defined
+      tags:
+        - apt
+        - nfs
+
     - name: Copy the join command to server location
       copy: src=join-command dest=/tmp/join-command.sh mode=0777
       tags:

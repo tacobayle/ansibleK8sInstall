@@ -22,45 +22,101 @@
     #   command: swapoff -a
     #   when: ansible_swaptotal_mb > 0
 
+    - name: Install NFS package if required
+      become: true
+      apt:
+        name: nfs-kernel-server
+        update_cache: yes
+      ignore_errors: no
+      when:
+        - nfsShares is defined
+        - kubernetesMasterIpCidr
+        - kubernetes.domain is defined
+      tags:
+        - apt
+        - nfs
+
+    - name: Configure NFS FQDN
+      become: true
+      lineinfile:
+        path: /etc/idmapd.conf
+        insertafter: '^#Domain '
+        line: Domain = master.{{ kubernetes.domain }}
+      when:
+        - nfsShares is defined
+        - kubernetesMasterIpCidr
+        - kubernetes.domain is defined
+      tags:
+        - nfs
+
+    - name: Create a directory for NFS shares
+      file:
+        path: "/var/lib/nfs-{{ item }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ nfsShares }}"
+      when:
+        - nfsShares is defined
+        - kubernetesMasterIpCidr
+        - kubernetes.domain is defined
+      tags:
+        - nfs
+
+    - name: Configure NFS Shares
+      become: true
+      lineinfile:
+        path: /etc/exports
+        line: "/var/lib/nfs-{{ item }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+      loop: "{{ nfsShares }}"
+      when:
+        - nfsShares is defined
+        - kubernetesMasterIpCidr
+        - kubernetes.domain is defined
+      tags:
+        - nfs
+
+    - name: restart NFS service
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: nfs-server
+      when:
+        - nfsShares is defined
+        - kubernetesMasterIpCidr
+        - kubernetes.domain is defined
+      tags:
+        - nfs
+
+
     - name: Initialize the cluster
       become: true
       shell: |
-        ip=$(ip -f inet addr show {{ k8sApiIf }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
-        kubeadm init --pod-network-cidr={{ podNetworkCidr }} --apiserver-advertise-address $ip
+        ip=$(ip -f inet addr show {{ kubernetes.ifApi }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
+        kubeadm init --pod-network-cidr={{ kubernetes.podNetworkCidr }} --apiserver-advertise-address $ip
       ignore_errors: no
       tags:
         - kubeadm
 
-    - name: Setup the kube config file for {{ dockerUser }}
+    - name: Setup the kube config file for {{ kubernetes.dockerUser }}
       become: true
       command: "{{ item }}"
       ignore_errors: no
       tags:
         - kubeadm
       with_items:
-        - mkdir -p /home/{{ dockerUser }}/.kube
-        - cp -i /etc/kubernetes/admin.conf /home/{{ dockerUser }}/.kube/config
-        - chown {{ dockerUser }}:{{ dockerUser }} /home/{{ dockerUser }}/.kube/config
+        - mkdir -p /home/{{ kubernetes.dockerUser }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ kubernetes.dockerUser }}/.kube/config
+        - chown {{ kubernetes.dockerUser }}:{{ kubernetes.dockerUser }} /home/{{ kubernetes.dockerUser }}/.kube/config
 
-    - name: Install Networking Provider // Flannel
+    - name: Install Networking Provider
       command: "{{ item }}"
       ignore_errors: no
       tags:
         - kubectl
       with_items:
-        - kubectl apply -f {{ cniFlannelUrl }}
+        - kubectl apply -f {{ kubernetes.cniUrl }}
       when:
-        - cni == "flannel"
-
-    - name: Install Networking Provider  // Calico
-      command: "{{ item }}"
-      ignore_errors: no
-      tags:
-        - kubectl
-      with_items:
-        - kubectl apply -f {{ cniCalicoUrl }}
-      when:
-        - cni == "calico"
+        - kubernetes.cniUrl is defined
 
     - name: Generate join command
       command: kubeadm token create --print-join-command
