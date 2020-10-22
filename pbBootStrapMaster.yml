@@ -40,7 +40,7 @@
       become: true
       lineinfile:
         path: /etc/idmapd.conf
-        insertafter: '^#Domain '
+        insertafter: '^# Domain '
         line: Domain = master.{{ kubernetes.domain }}
       when:
         - nfsShares is defined
@@ -52,7 +52,7 @@
     - name: Create a directory for NFS shares
       become: true
       file:
-        path: "/var/lib/nfs-{{ item }}"
+        path: "/var/lib/{{ item }}"
         state: directory
         mode: '0755'
       loop: "{{ nfsShares }}"
@@ -67,7 +67,7 @@
       become: true
       lineinfile:
         path: /etc/exports
-        line: "/var/lib/nfs-{{ item }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+        line: "/var/lib/{{ item }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
       loop: "{{ nfsShares }}"
       when:
         - nfsShares is defined
@@ -76,17 +76,31 @@
       tags:
         - nfs
 
-    - name: restart NFS service
-      systemd:
-        state: restarted
-        daemon_reload: yes
-        name: nfs-server
+# systemctl restart nfs-server
+
+    - name: Restart NFS server
+      become: true
+      shell: |
+        systemctl restart nfs-server
+      ignore_errors: no
       when:
         - nfsShares is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
+
+    # - name: restart NFS service
+    #   systemd:
+    #     state: restarted
+    #     daemon_reload: yes
+    #     name: nfs-server
+    #   when:
+    #     - nfsShares is defined
+    #     - kubernetesMasterIpCidr is defined
+    #     - kubernetes.domain is defined
+    #   tags:
+    #     - nfs
 
 
     - name: Initialize the cluster
