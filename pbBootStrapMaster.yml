@@ -50,6 +50,7 @@
         - nfs
 
     - name: Create a directory for NFS shares
+      become: true
       file:
         path: "/var/lib/nfs-{{ item }}"
         state: directory
