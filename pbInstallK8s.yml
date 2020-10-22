@@ -9,6 +9,13 @@
 
   tasks:
 
+
+    - debug:
+        msg: "{{ kubernetes }}"
+
+    - debug:
+        msg: "{{ kubernetes.dockerVersion }}"
+
     - name: Update repositories cache and install a list of package
       become: true
       apt:

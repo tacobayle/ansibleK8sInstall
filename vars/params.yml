@@ -12,7 +12,6 @@ repoUrl:
   - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
   - deb https://apt.kubernetes.io/ kubernetes-xenial main
   - deb https://baltocdn.com/helm/stable/debian/ all main
-dockerVersion: 5:19.03.8~3-0~ubuntu-bionic
 kubernetes:
   domain: ako.avidemo.fr
   ifApi: ens34
