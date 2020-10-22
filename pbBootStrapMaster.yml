@@ -70,7 +70,7 @@
       loop: "{{ nfsShares }}"
       when:
         - nfsShares is defined
-        - kubernetesMasterIpCidr
+        - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
         - nfs
