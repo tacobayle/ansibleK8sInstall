@@ -9,7 +9,6 @@
 
   tasks:
 
-
     - debug:
         msg: "{{ kubernetes }}"
 

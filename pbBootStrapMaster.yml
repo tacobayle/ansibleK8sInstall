@@ -29,7 +29,7 @@
         update_cache: yes
       ignore_errors: no
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -43,7 +43,7 @@
         insertafter: '^# Domain '
         line: Domain = master.{{ kubernetes.domain }}
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -52,12 +52,12 @@
     - name: Create a directory for NFS shares
       become: true
       file:
-        path: "/var/lib/{{ item }}"
+        path: "/var/lib/{{ item.name }}"
         state: directory
         mode: '0755'
-      loop: "{{ nfsShares }}"
+      loop: "{{ kubernetes.nfs }}"
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -67,10 +67,10 @@
       become: true
       lineinfile:
         path: /etc/exports
-        line: "/var/lib/{{ item }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
-      loop: "{{ nfsShares }}"
+        line: "/var/lib/{{ item.name }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+      loop: "{{ kubernetes.nfs }}"
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -84,7 +84,7 @@
         systemctl restart nfs-server
       ignore_errors: no
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -96,7 +96,7 @@
     #     daemon_reload: yes
     #     name: nfs-server
     #   when:
-    #     - nfsShares is defined
+    #     - kubernetes.nfs is defined
     #     - kubernetesMasterIpCidr is defined
     #     - kubernetes.domain is defined
     #   tags:

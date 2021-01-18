@@ -11,11 +11,11 @@
 
     - name: Spin up Deployment
       shell: |
-        kubectl apply -f "{{ item }}"
+        kubectl apply -f "{{ item.url }}"
       ignore_errors: no
       tags:
         - kubectl
         - deployment
-      loop: "{{ deploymentUrls }}"
+      loop: "{{ kubernetes.deployments }}"
       when:
-        - deploymentUrls is defined
+        - kubernetes.deployments is defined

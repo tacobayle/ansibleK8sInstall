@@ -32,7 +32,7 @@
         update_cache: yes
       ignore_errors: no
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr
         - kubernetes.domain is defined
       tags:
@@ -46,7 +46,7 @@
         insertafter: '^#Domain '
         line: Domain = master.{{ kubernetes.domain }}
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -54,12 +54,12 @@
 
     - name: Create a directory for NFS shares
       file:
-        path: "/var/lib/nfs-{{ item }}"
+        path: "/var/lib/nfs-{{ item.name }}"
         state: directory
         mode: '0755'
-      loop: "{{ nfsShares }}"
+      loop: "{{ kubernetes.nfs }}"
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -69,10 +69,10 @@
       become: true
       lineinfile:
         path: /etc/exports
-        line: "/var/lib/nfs-{{ item }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
-      loop: "{{ nfsShares }}"
+        line: "/var/lib/nfs-{{ item.name }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+      loop: "{{ kubernetes.nfs }}"
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
@@ -84,7 +84,7 @@
         daemon_reload: yes
         name: nfs-server
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:

@@ -16,7 +16,7 @@
         update_cache: yes
       ignore_errors: no
       when:
-        - nfsShares is defined
+        - kubernetes.nfs is defined
         - kubernetesMasterIpCidr is defined
         - kubernetes.domain is defined
       tags:
