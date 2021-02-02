@@ -9,14 +9,15 @@
 
   tasks:
 
-    - name: Docker login
-      become: true
-      shell: |
-        su - "{{ kubernetes.dockerUser }}"
-        while [ $? -ne 0 ] ; do docker login --username ${docker_registry_username} --password ${docker_registry_password} ; sleep 5 ; done
-      ignore_errors: no
-      when:
-        - kubernetes.cniUrl is defined
+#    - name: Docker login
+#      become: true
+#      shell: |
+#        su - "{{ kubernetes.dockerUser }}"
+#        while [ $? -ne 0 ] ; do docker login --username ${docker_registry_username} --password ${docker_registry_password} ; sleep 5 ; done
+#      ignore_errors: no
+#      when:
+#        - docker_registry_username is defined
+#        - docker_registry_password is defined
 
 #    - name: Install NFS package if required
 #      become: true
