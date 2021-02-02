@@ -1,0 +1,17 @@
+---
+- hosts: master, workers
+  gather_facts: yes
+  become_user: root
+  become_method: sudo
+
+  tasks:
+
+    - debug:
+        msg: "{{ kubernetes }}"
+
+    - name: patching /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+      shell: |
+        ip=$(ip -f inet addr show {{ kubernetes.ifApi }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
+        sed '${s/$/ --node-ip '$ip'/}' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+      ignore_errors: no
+      become: true
