@@ -28,7 +28,7 @@ dockerK8sPackages:
   - kubectl={{ kubernetes.version }}
   - kubelet={{ kubernetes.version }}
   - kubeadm={{ kubernetes.version }}
-  - helm
+#  - helm
 deploymentUrls:
   - https://raw.githubusercontent.com/tacobayle/k8sYaml/master/k8sDeploymentBusyBoxFrontEndV1.yml
   - https://raw.githubusercontent.com/tacobayle/k8sYaml/master/k8sDeploymentBusyBoxFrontEndV2.yml
