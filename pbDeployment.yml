@@ -19,3 +19,14 @@
       loop: "{{ kubernetes.deployments }}"
       when:
         - kubernetes.deployments is defined
+
+    - name: Spin up Services
+      shell: |
+        kubectl apply -f "{{ item.url }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+        - deployment
+      loop: "{{ kubernetes.services }}"
+      when:
+        - kubernetes.deployments is defined

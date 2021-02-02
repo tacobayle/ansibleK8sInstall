@@ -22,73 +22,73 @@
     #   command: swapoff -a
     #   when: ansible_swaptotal_mb > 0
 
-    - name: Install NFS package if required
-      become: true
-      apt:
-        name: nfs-kernel-server
-        update_cache: yes
-      ignore_errors: no
-      when:
-        - kubernetes.nfs is defined
-        - kubernetesMasterIpCidr is defined
-        - kubernetes.domain is defined
-      tags:
-        - apt
-        - nfs
-
-    - name: Configure NFS FQDN
-      become: true
-      lineinfile:
-        path: /etc/idmapd.conf
-        insertafter: '^# Domain '
-        line: Domain = master.{{ kubernetes.domain }}
-      when:
-        - kubernetes.nfs is defined
-        - kubernetesMasterIpCidr is defined
-        - kubernetes.domain is defined
-      tags:
-        - nfs
-
-    - name: Create a directory for NFS shares
-      become: true
-      file:
-        path: "/var/lib/{{ item.name }}"
-        state: directory
-        mode: '0755'
-      loop: "{{ kubernetes.nfs }}"
-      when:
-        - kubernetes.nfs is defined
-        - kubernetesMasterIpCidr is defined
-        - kubernetes.domain is defined
-      tags:
-        - nfs
-
-    - name: Configure NFS Shares
-      become: true
-      lineinfile:
-        path: /etc/exports
-        line: "/var/lib/{{ item.name }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
-      loop: "{{ kubernetes.nfs }}"
-      when:
-        - kubernetes.nfs is defined
-        - kubernetesMasterIpCidr is defined
-        - kubernetes.domain is defined
-      tags:
-        - nfs
-
-# systemctl restart nfs-server
-
-    - name: Restart NFS server
-      become: true
-      shell: |
-        systemctl restart nfs-server
-      ignore_errors: no
-      when:
-        - kubernetes.nfs is defined
-        - kubernetesMasterIpCidr is defined
-        - kubernetes.domain is defined
-      tags:
-        - nfs
+#    - name: Install NFS package if required
+#      become: true
+#      apt:
+#        name: nfs-kernel-server
+#        update_cache: yes
+#      ignore_errors: no
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - apt
+#        - nfs
+#
+#    - name: Configure NFS FQDN
+#      become: true
+#      lineinfile:
+#        path: /etc/idmapd.conf
+#        insertafter: '^# Domain '
+#        line: Domain = master.{{ kubernetes.domain }}
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+#
+#    - name: Create a directory for NFS shares
+#      become: true
+#      file:
+#        path: "/var/lib/{{ item.name }}"
+#        state: directory
+#        mode: '0755'
+#      loop: "{{ kubernetes.nfs }}"
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+#
+#    - name: Configure NFS Shares
+#      become: true
+#      lineinfile:
+#        path: /etc/exports
+#        line: "/var/lib/{{ item.name }} {{ kubernetesMasterIpCidr | ipaddr('network/prefix') }}(rw,no_root_squash)"
+#      loop: "{{ kubernetes.nfs }}"
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
+#
+## systemctl restart nfs-server
+#
+#    - name: Restart NFS server
+#      become: true
+#      shell: |
+#        systemctl restart nfs-server
+#      ignore_errors: no
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - nfs
 
     # - name: restart NFS service
     #   systemd:
@@ -102,6 +102,14 @@
     #   tags:
     #     - nfs
 
+    - name: Docker login
+      become: true
+      shell: |
+        su - "{{ kubernetes.dockerUser }}"
+        while [ $? -ne 0 ] ; do docker login --username ${docker_registry_username} --password ${docker_registry_password} ; sleep 5 ; done
+      ignore_errors: no
+      when:
+        - kubernetes.cniUrl is defined
 
     - name: Initialize the cluster
       become: true

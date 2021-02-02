@@ -9,19 +9,28 @@
 
   tasks:
 
-    - name: Install NFS package if required
+    - name: Docker login
       become: true
-      apt:
-        name: nfs-common
-        update_cache: yes
+      shell: |
+        su - "{{ kubernetes.dockerUser }}"
+        while [ $? -ne 0 ] ; do docker login --username ${docker_registry_username} --password ${docker_registry_password} ; sleep 5 ; done
       ignore_errors: no
       when:
-        - kubernetes.nfs is defined
-        - kubernetesMasterIpCidr is defined
-        - kubernetes.domain is defined
-      tags:
-        - apt
-        - nfs
+        - kubernetes.cniUrl is defined
+
+#    - name: Install NFS package if required
+#      become: true
+#      apt:
+#        name: nfs-common
+#        update_cache: yes
+#      ignore_errors: no
+#      when:
+#        - kubernetes.nfs is defined
+#        - kubernetesMasterIpCidr is defined
+#        - kubernetes.domain is defined
+#      tags:
+#        - apt
+#        - nfs
 
     - name: Copy the join command to server location
       copy: src=join-command dest=/tmp/join-command.sh mode=0777
