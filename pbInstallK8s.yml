@@ -15,6 +15,14 @@
     - debug:
         msg: "{{ kubernetes.dockerVersion }}"
 
+
+    - name: Apply new IP config
+      become: true
+      shell: |
+        sudo netplan apply
+        slep 10
+      ignore_errors: no
+
     - name: Update repositories cache and install a list of package
       become: true
       apt:
