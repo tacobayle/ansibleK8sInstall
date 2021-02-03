@@ -132,21 +132,48 @@
         - cp -i /etc/kubernetes/admin.conf /home/{{ kubernetes.dockerUser }}/.kube/config
         - chown {{ kubernetes.dockerUser }}:{{ kubernetes.dockerUser }} /home/{{ kubernetes.dockerUser }}/.kube/config
 
-    - name: Install Networking Provider
+    - set_fact:
+        docker_patch:
+          imagePullSecrets:
+            - name: docker
+
+
+    - name: Pacth servce acount with docker authentication in defaultand kube-system  name space
       command: "{{ item }}"
       ignore_errors: no
       tags:
         - kubectl
       with_items:
+        - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username={{ docker_registry_username }} --docker-password={{ docker_registry_password }} --docker-email={{ docker_registry_email }}
+        - kubectl patch serviceaccount default -p "{{ docker_patch | to_json }}"
         - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username={{ docker_registry_username }} --docker-password={{ docker_registry_password }} --docker-email={{ docker_registry_email }} -n kube-system
-#        - kubectl patch serviceaccount default -p \"\{\"imagePullSecrets\": [\{\"name\": \"docker\"\}]\}\" -n kube-system
-#        - kubectl apply -f {{ kubernetes.cniUrl }}
-#      when:
-#        - kubernetes.cniUrl is defined
-#
-#    - name: Generate join command
-#      command: kubeadm token create --print-join-command
-#      register: join_command
-#
-#    - name: Copy join command to local file
-#      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+        - kubectl patch serviceaccount default -p "{{ docker_patch | to_json }}" -n kube-system
+      register: patchResult
+      when:
+        - docker_registry_username is defined
+        - docker_registry_password is defined
+        - docker_registry_password is defined
+
+    - name: Debug
+      debug:
+        msg: "{{ patchResult }}"
+      when:
+        - patchResult is defined
+
+
+    - name: Install CNI
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ kubernetes.cniUrl }}
+      when:
+        - kubernetes.cniUrl is defined
+
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
+
+    - name: Copy join command to local file
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
