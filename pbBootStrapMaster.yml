@@ -138,6 +138,7 @@
       tags:
         - kubectl
       with_items:
+        - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username="{{ docker_registry_username }}" --docker-password="{{ docker_registry_password }}" --docker-email="{{ docker_registry_email }}"
         - kubectl apply -f {{ kubernetes.cniUrl }}
       when:
         - kubernetes.cniUrl is defined
