@@ -138,15 +138,15 @@
       tags:
         - kubectl
       with_items:
-        - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username="{{ docker_registry_username }}" --docker-password="{{ docker_registry_password }}" --docker-email="{{ docker_registry_email }}" -n kube-system
-        - kubectl patch serviceaccount default -p \"{\"imagePullSecrets\": [{\"name\": \"docker\"}]}\" -n kube-system
-        - kubectl apply -f {{ kubernetes.cniUrl }}
-      when:
-        - kubernetes.cniUrl is defined
-
-    - name: Generate join command
-      command: kubeadm token create --print-join-command
-      register: join_command
-
-    - name: Copy join command to local file
-      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+        - kubectl create secret docker-registry docker --docker-server=docker.io --docker-username={{ docker_registry_username }} --docker-password={{ docker_registry_password }} --docker-email={{ docker_registry_email }} -n kube-system
+#        - kubectl patch serviceaccount default -p \"\{\"imagePullSecrets\": [\{\"name\": \"docker\"\}]\}\" -n kube-system
+#        - kubectl apply -f {{ kubernetes.cniUrl }}
+#      when:
+#        - kubernetes.cniUrl is defined
+#
+#    - name: Generate join command
+#      command: kubeadm token create --print-join-command
+#      register: join_command
+#
+#    - name: Copy join command to local file
+#      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
