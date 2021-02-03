@@ -12,7 +12,9 @@
     - name: patching /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
       shell: |
         ip=$(ip -f inet addr show {{ kubernetes.ifApi }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
-        sed '${s/$/ --node-ip '$ip'/}' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        sudo sed '${s/$/ --node-ip '$ip'/}' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        sudo systemctl daemon-reload
+        sudo systemctl restart kubelet
       ignore_errors: no
       become: true
 
