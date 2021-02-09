@@ -1,7 +1,7 @@
 ---
 - import_playbook: pbInstallK8s.yml
 - import_playbook: pbBootStrapMaster.yml
-#- import_playbook: pbBootStrapWorkers.yml
-#- import_playbook: pbClusterStatus.yml
+- import_playbook: pbBootStrapWorkers.yml
+- import_playbook: pbClusterStatus.yml
 #- import_playbook: pbPatchingK8s.yml
 #- import_playbook: pbDeployment.yml

@@ -161,19 +161,19 @@
 #        - patchResult is defined
 #
 #
-#    - name: Install CNI
-#      command: "{{ item }}"
-#      ignore_errors: no
-#      tags:
-#        - kubectl
-#      with_items:
-#        - kubectl apply -f {{ kubernetes.cniUrl }}
-#      when:
-#        - kubernetes.cniUrl is defined
-#
-#    - name: Generate join command
-#      command: kubeadm token create --print-join-command
-#      register: join_command
-#
-#    - name: Copy join command to local file
-#      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+    - name: Install CNI
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ kubernetes.cniUrl }}
+      when:
+        - kubernetes.cniUrl is defined
+
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
+
+    - name: Copy join command to local file
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
