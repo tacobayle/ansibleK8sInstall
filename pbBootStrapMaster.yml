@@ -115,9 +115,12 @@
     - name: Initialize the cluster
       become: true
       shell: |
-        ip=$(ip -f inet addr show {{ kubernetes.ifApi }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
-        kubeadm init --pod-network-cidr={{ kubernetes.podNetworkCidr }} --apiserver-advertise-address $ip
+        ip=$(ip -f inet addr show {{ kubernetes.interface }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
+        kubeadm init --pod-network-cidr={{ kubernetes.networks.pod }} --apiserver-advertise-address $ip
       ignore_errors: no
+      when:
+        - kubernetes.interface is defined
+        - kubernetes.networks.pod
       tags:
         - kubeadm
 
@@ -128,14 +131,16 @@
       tags:
         - kubeadm
       with_items:
-        - mkdir -p /home/{{ kubernetes.dockerUser }}/.kube
-        - cp -i /etc/kubernetes/admin.conf /home/{{ kubernetes.dockerUser }}/.kube/config
-        - chown {{ kubernetes.dockerUser }}:{{ kubernetes.dockerUser }} /home/{{ kubernetes.dockerUser }}/.kube/config
+        - mkdir -p /home/{{ kubernetes.username }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ kubernetes.username }}/.kube/config
+        - chown {{ kubernetes.username }}:{{ kubernetes.username }} /home/{{ kubernetes.username }}/.kube/config
+      when:
+        - kubernetes.username is defined
 
-    - set_fact:
-        docker_patch:
-          imagePullSecrets:
-            - name: docker
+#    - set_fact:
+#        docker_patch:
+#          imagePullSecrets:
+#            - name: docker
 
 
 #    - name: Pacth servce acount with docker authentication in defaultand kube-system  name space
@@ -167,9 +172,9 @@
       tags:
         - kubectl
       with_items:
-        - kubectl apply -f {{ kubernetes.cniUrl }}
+        - kubectl apply -f {{ kubernetes.cni.url }}
       when:
-        - kubernetes.cniUrl is defined
+        -  kubernetes.cni.url is defined
 
     - name: Generate join command
       command: kubeadm token create --print-join-command

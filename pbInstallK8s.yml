@@ -12,16 +12,13 @@
     - debug:
         msg: "{{ kubernetes }}"
 
-    - debug:
-        msg: "{{ kubernetes.dockerVersion }}"
-
-
     - name: Apply new IP config
       become: true
       shell: |
         sudo netplan apply
         sleep 10
-      ignore_errors: no
+      when:
+        - kubernetes.netplanApply is true
 
     - name: Update repositories cache and install a list of package
       become: true
@@ -77,11 +74,11 @@
     - name: Add user {{ kubernetes.dockerUser }} to the docker group
       become: true
       user:
-        name: "{{ kubernetes.dockerUser }}"
+        name: "{{ kubernetes.username }}"
         group: docker
         append: yes
       ignore_errors: no
-      when: kubernetes.dockerUser is defined
+      when: kubernetes.username is defined
       tags:
         - user
 
