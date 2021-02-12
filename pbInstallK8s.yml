@@ -9,8 +9,8 @@
 
   tasks:
 
-    - debug:
-        msg: "{{ kubernetes }}"
+#    - debug:
+#        msg: "{{ kubernetes }}"
 
     - name: Apply new IP config
       become: true

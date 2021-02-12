@@ -12,9 +12,9 @@
       - name: checking Status of Nodes
         block:
 
-          - name: Pausing for 120 seconds
+          - name: Pausing for 60 seconds
             pause:
-              minutes: 2
+              minutes: 1
             tags:
               - status
 
