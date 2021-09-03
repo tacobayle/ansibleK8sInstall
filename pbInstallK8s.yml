@@ -18,7 +18,7 @@
         sudo netplan apply
         sleep 10
       when:
-        - kubernetes.netplanApply
+        - kubernetes.netplanApply | bool
 
     - name: Update repositories cache and install a list of package
       become: true
