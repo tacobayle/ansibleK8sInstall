@@ -175,7 +175,7 @@
         - kubernetes.cni.url is defined
         - kubernetes.username is defined
         - kubernetes.cni.name == "antrea"
-        - kubernetes.cni.enableNPL | bool
+        - kubernetes.cni.enableNPL
 
     - name: Enabling NPL - if Antrea with NPL
       lineinfile:
@@ -186,7 +186,7 @@
         - kubernetes.cni.url is defined
         - kubernetes.username is defined
         - kubernetes.cni.name == "antrea"
-        - kubernetes.cni.enableNPL | bool
+        - kubernetes.cni.enableNPL
 
     - name: Install CNI - if Antrea with NPL
       command: "{{ item }}"
@@ -198,7 +198,7 @@
       when:
         - kubernetes.cni.url is defined
         - kubernetes.cni.name == "antrea"
-        - kubernetes.cni.enableNPL | bool
+        - kubernetes.cni.enableNPL
 
     - name: Install CNI - if Antrea wo NPL
       command: "{{ item }}"
@@ -210,7 +210,7 @@
       when:
         - kubernetes.cni.url is defined
         - kubernetes.cni.name == "antrea"
-        - not kubernetes.cni.enableNPL | bool
+        - not kubernetes.cni.enableNPL
 
     - name: Install CNI - if not Antrea
       command: "{{ item }}"
