@@ -210,7 +210,7 @@
       when:
         - kubernetes.cni.url is defined
         - kubernetes.cni.name == "antrea"
-        - kubernetes.cni.enableNPL | bool
+        - not kubernetes.cni.enableNPL | bool
 
     - name: Install CNI - if not Antrea
       command: "{{ item }}"
