@@ -166,7 +166,41 @@
 #        - patchResult is defined
 #
 #
-    - name: Install CNI
+
+    - name: Download yaml file - if Antrea with NPL
+      get_url:
+        url: "{{ kubernetes.cni.url }}"
+        dest: "/home/{{ kubernetes.username }}/{{ kubernetes.cni.url | basename }}"
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.username is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Enabling NPL - if Antrea with NPL
+      lineinfile:
+        path: "/home/{{ kubernetes.username }}/{{ kubernetes.cni.url | basename }}"
+        regexp: 'NodePortLocal: false'
+        line: '      NodePortLocal: true'
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.username is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Install CNI - if Antrea with NPL
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - "kubectl apply -f /home/{{ kubernetes.username }}/{{ kubernetes.cni.url | basename }}"
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Install CNI - if Antrea wo NPL
       command: "{{ item }}"
       ignore_errors: no
       tags:
@@ -174,7 +208,20 @@
       with_items:
         - kubectl apply -f {{ kubernetes.cni.url }}
       when:
-        -  kubernetes.cni.url is defined
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.name == "antrea"
+        - kubernetes.cni.enableNPL | bool
+
+    - name: Install CNI - if not Antrea
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl apply -f {{ kubernetes.cni.url }}
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.name != "antrea"
 
     - name: Generate join command
       command: kubeadm token create --print-join-command
