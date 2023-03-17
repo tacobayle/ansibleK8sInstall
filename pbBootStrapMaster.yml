@@ -212,7 +212,7 @@
         - kubernetes.cni.name == "antrea"
         - not kubernetes.cni.enableNPL | bool
 
-    - name: Install CNI - if not Antrea
+    - name: Install CNI - if Flannel
       command: "{{ item }}"
       ignore_errors: no
       tags:
@@ -221,7 +221,21 @@
         - kubectl apply -f {{ kubernetes.cni.url }}
       when:
         - kubernetes.cni.url is defined
-        - kubernetes.cni.name != "antrea"
+        - kubernetes.cni.name == "flannel"
+
+    - name: Install CNI - if Calico
+      command: "{{ item }}"
+      ignore_errors: no
+      tags:
+        - kubectl
+      with_items:
+        - kubectl create -f {{ kubernetes.cni.url }}
+        - curl {{  kubernetes.cni.url_crd }} -O
+        - kubectl create -f custom-resources.yaml
+      when:
+        - kubernetes.cni.url is defined
+        - kubernetes.cni.url_crd is defined
+        - kubernetes.cni.name == "calico"
 
     - name: Generate join command
       command: kubeadm token create --print-join-command
