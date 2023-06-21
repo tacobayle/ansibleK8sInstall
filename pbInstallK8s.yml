@@ -82,15 +82,15 @@
 #      tags:
 #        - user
 
-    - name: Remove old containerd and remaining ubuntu config
-      become: true
-      shell: |
-        apt remove containerd
-        apt update
-        apt install -y containerd.io
-        rm -f /etc/containerd/config.toml
-        systemctl restart containerd
-      ignore_errors: no
+#    - name: Remove old containerd and remaining ubuntu config
+#      become: true
+#      shell: |
+#        apt remove containerd
+#        apt update
+#        apt install -y containerd.io
+#        rm -f /etc/containerd/config.toml
+#        systemctl restart containerd
+#      ignore_errors: no
 
     - name: Enable iptables
       become: true
