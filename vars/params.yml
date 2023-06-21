@@ -23,7 +23,7 @@ repoUrl:
 #  cniUrl: https://docs.projectcalico.org/manifests/calico.yaml # for calico
 dockerK8sPackages:
   # - docker-ce-cli={{ dockerVersion }}
-  - docker-ce={{ kubernetes.docker.version }}
+  # - docker-ce={{ kubernetes.docker.version }}
   # - containerd.io
   - kubectl={{ kubernetes.version }}
   - kubelet={{ kubernetes.version }}
