@@ -115,11 +115,11 @@
     - name: Initialize the cluster
       become: true
       shell: |
-        ip=$(ip -f inet addr show {{ kubernetes.interface }} | awk '/inet / {print $2}' | awk -F/ '{print $1}')
+        kube_interface=$(ip -o link show | awk -F': ' '{print $2}' | head -3 | tail -1)
+        ip=$(ip -f inet addr show $kube_interface | awk '/inet / {print $2}' | awk -F/ '{print $1}')
         kubeadm init --pod-network-cidr={{ kubernetes.networks.pod }} --apiserver-advertise-address $ip
       ignore_errors: no
       when:
-        - kubernetes.interface is defined
         - kubernetes.networks.pod
       tags:
         - kubeadm
