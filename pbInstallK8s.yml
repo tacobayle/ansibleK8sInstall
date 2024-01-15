@@ -20,16 +20,16 @@
       when:
         - kubernetes.netplanApply | bool
 
-    - name: Update repositories cache and install a list of package
-      become: true
-      apt:
-        name: "{{ item }}"
-        update_cache: yes
-      ignore_errors: no
-      loop: "{{ packageList }}"
-      when: packageList is defined
-      tags:
-        - apt
+#    - name: Update repositories cache and install a list of package
+#      become: true
+#      apt:
+#        name: "{{ item }}"
+#        update_cache: yes
+#      ignore_errors: no
+#      loop: "{{ packageList }}"
+#      when: packageList is defined
+#      tags:
+#        - apt
 
     - name: Add keys to apt
       become: true
