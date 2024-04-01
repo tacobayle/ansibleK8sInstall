@@ -68,14 +68,6 @@
       tags:
         - apt
 
-    - name: Add repo to apt for k8s
-      become: true
-      apt_repository:
-        repo: "https://pkgs.k8s.io/core:/stable:/{{ kubernetes.version[0:5] }}/deb/ /"
-        state: present
-      tags:
-        - apt
-
     - name: Install k8s and helm packages
       become: true
       apt:

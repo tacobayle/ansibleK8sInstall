@@ -10,7 +10,7 @@ keyUrl:
   - https://baltocdn.com/helm/signing.asc
 repoUrl:
   - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
-#  - deb https://apt.kubernetes.io/ kubernetes-xenial main # seems kubernetes-xenial does not depend of $(lsb_release -cs)
+  - deb https://pkgs.k8s.io/core:/stable:/{{ kubernetes.version[0:5] }}/deb/ /
   - deb https://baltocdn.com/helm/stable/debian/ all main
 #kubernetes:
 #  domain: ako.avidemo.fr
@@ -25,9 +25,9 @@ dockerK8sPackages:
   # - docker-ce-cli={{ dockerVersion }}
   # - docker-ce={{ kubernetes.docker.version }}
   # - containerd.io
-  - kubectl={{ kubernetes.version }}
-  - kubelet={{ kubernetes.version }}
-  - kubeadm={{ kubernetes.version }}
+  - kubectl={{ kubernetes.version[1:] }}
+  - kubelet={{ kubernetes.version[1:] }}
+  - kubeadm={{ kubernetes.version[1:] }}
   - helm
 #deploymentUrls:
 #  - https://raw.githubusercontent.com/tacobayle/k8sYaml/master/k8sDeploymentBusyBoxFrontEndV1.yml
