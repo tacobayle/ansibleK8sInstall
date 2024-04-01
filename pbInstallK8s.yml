@@ -41,6 +41,14 @@
         - apt
       retries: 3
 
+    - name: Add keys to apt for k8s
+      become: true
+      apt_key:
+        url: "https://pkgs.k8s.io/core:/stable:/{{ kubernetes.version[0:5] }}/deb/Release.key"
+      tags:
+        - apt
+      retries: 3
+
     # - debug:
     #     msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
     # - debug:
@@ -57,6 +65,14 @@
         state: present
       loop: "{{ repoUrl }}"
       when: repoUrl is defined
+      tags:
+        - apt
+
+    - name: Add repo to apt for k8s
+      become: true
+      apt_repository:
+        repo: "https://pkgs.k8s.io/core:/stable:/{{ kubernetes.version[0:5] }}/deb/ /"
+        state: present
       tags:
         - apt
 

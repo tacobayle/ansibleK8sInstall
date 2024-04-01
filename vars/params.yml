@@ -6,11 +6,11 @@ packageList:
   - software-properties-common
 keyUrl:
   - https://download.docker.com/linux/ubuntu/gpg
-  - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#  - https://packages.cloud.google.com/apt/doc/apt-key.gpg
   - https://baltocdn.com/helm/signing.asc
 repoUrl:
   - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ hostvars[inventory_hostname].ansible_distribution_release }} stable
-  - deb https://apt.kubernetes.io/ kubernetes-xenial main # seems kubernetes-xenial does not depend of $(lsb_release -cs)
+#  - deb https://apt.kubernetes.io/ kubernetes-xenial main # seems kubernetes-xenial does not depend of $(lsb_release -cs)
   - deb https://baltocdn.com/helm/stable/debian/ all main
 #kubernetes:
 #  domain: ako.avidemo.fr
